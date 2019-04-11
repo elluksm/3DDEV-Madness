@@ -9,6 +9,7 @@ public class PlayerCollision : MonoBehaviour
     public Text statusText;
     public Text timeText;
     private int count;
+    private bool isGameFinished;
 
     void Start()
     {
@@ -17,6 +18,7 @@ public class PlayerCollision : MonoBehaviour
         SetCountText();
         statusText.text = "";
         timeText.text = "35";
+        isGameFinished = false;
     }
 
     void OnCollisionEnter (Collision collisionInfo )
@@ -38,6 +40,12 @@ public class PlayerCollision : MonoBehaviour
             count = count + 1;
             SetCountText();
         }
+
+        if (other.gameObject.CompareTag("End"))
+        {
+            isGameFinished = true;
+            statusText.text = "You win! You are safely at home..";
+        }
     }
 
     void SetCountText()
@@ -45,7 +53,16 @@ public class PlayerCollision : MonoBehaviour
         lifeCountText.text = "Your health: " + count.ToString();
         if (count < 1)
         {
-        statusText.text = "Game Over";
+            statusText.text = "Game Over";
         }
+    }
+
+    void FixedUpdate()
+    {
+        if(rb.position.y < -1f && !isGameFinished)
+        {
+            statusText.text = "Game Over";
+        }
+
     }
 }
