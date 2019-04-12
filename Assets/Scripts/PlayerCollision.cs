@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerCollision : MonoBehaviour
 {
@@ -8,18 +9,40 @@ public class PlayerCollision : MonoBehaviour
     public Text lifeCountText;
     public Text statusText;
     public Text timeText;
+    public Text descriptionText;
+    public Text gameRulesText;
+    public Button startButton;
+    public Button restartButton;
     private int count;
+    private float timer;
+    private bool isGameStarted;
     private bool isGameFinished;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         count = 3;
+        timer = 0.0f;
         SetCountText();
         statusText.text = "";
-        timeText.text = "35";
+        timeText.text = "";
+        isGameStarted = false;
         isGameFinished = false;
+        startButton.onClick.AddListener(OnStartButtonClick);
     }
+
+    void OnStartButtonClick()
+    {
+        // descriptionText.text = "";
+        startButton.gameObject.SetActive(false);
+        descriptionText.gameObject.SetActive(false);
+        gameRulesText.gameObject.SetActive(false);
+
+        //enable player movement script
+        gameObject.GetComponent<PlayerMovement>().enabled = true;
+        isGameStarted = true;
+    }
+
 
     void OnCollisionEnter (Collision collisionInfo )
     {
@@ -45,15 +68,7 @@ public class PlayerCollision : MonoBehaviour
         {
             isGameFinished = true;
             statusText.text = "You win! You are safely at home..";
-        }
-    }
-
-    void SetCountText()
-    {
-        lifeCountText.text = "Your health: " + count.ToString();
-        if (count < 1)
-        {
-            statusText.text = "Game Over";
+            EndGame();
         }
     }
 
@@ -62,7 +77,44 @@ public class PlayerCollision : MonoBehaviour
         if(rb.position.y < -1f && !isGameFinished)
         {
             statusText.text = "Game Over";
+            EndGame();
         }
 
+        SetTimerText();
+    }
+
+    void SetCountText()
+    {
+        lifeCountText.text = "Your health: " + count.ToString();
+        if (count < 1)
+        {
+            statusText.text = "Game Over";
+            EndGame();
+        }
+    }
+
+    void SetTimerText()
+    {
+        if(isGameStarted)
+        {
+            timer += Time.deltaTime;
+            timeText.text = timer.ToString("0.00");
+        }
+    }
+
+    void EndGame()
+    {
+        isGameStarted = false;
+
+        //disable player movement script
+        gameObject.GetComponent<PlayerMovement>().enabled = false;
+
+        restartButton.gameObject.SetActive(true);
+        restartButton.onClick.AddListener(OnRestartButtonClick);
+    }
+
+    void OnRestartButtonClick()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
