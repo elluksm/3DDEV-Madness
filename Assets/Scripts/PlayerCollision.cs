@@ -33,7 +33,6 @@ public class PlayerCollision : MonoBehaviour
 
     void OnStartButtonClick()
     {
-        // descriptionText.text = "";
         startButton.gameObject.SetActive(false);
         descriptionText.gameObject.SetActive(false);
         gameRulesText.gameObject.SetActive(false);
@@ -67,7 +66,7 @@ public class PlayerCollision : MonoBehaviour
         if (other.gameObject.CompareTag("End"))
         {
             isGameFinished = true;
-            statusText.text = "You win! You are safely at home..";
+            statusText.text = "You win!";
             EndGame();
         }
     }
@@ -85,7 +84,12 @@ public class PlayerCollision : MonoBehaviour
 
     void SetCountText()
     {
-        lifeCountText.text = "Your health: " + count.ToString();
+        var ct = "";
+        for(var i=0; i< count; i++)
+        {
+            ct = ct + "*";
+        }
+        lifeCountText.text = ct.ToString();
         if (count < 1)
         {
             statusText.text = "Game Over";
