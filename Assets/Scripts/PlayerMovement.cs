@@ -4,8 +4,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody rb;
-    public float forwardForce = 800f;
-    public float speed = 400f;
+    public float forwardForce;
+    public float speed;
 
     // Start is called before the first frame update
     void Start()
